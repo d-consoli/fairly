@@ -12,6 +12,8 @@ from ..file.remote import RemoteFile
 
 import os
 import datetime
+from random import randint
+from time import sleep
 from functools import cached_property
 
 class RemoteDataset(Dataset):
@@ -79,7 +81,7 @@ class RemoteDataset(Dataset):
         return self.client.download_file(file, path, name, notify)
 
 
-    def store(self, path: str=None, notify: Callable=None, extract: bool=False) -> LocalDataset:
+    def store(self, path: str=None, notify: Callable=None, extract: bool=False, random_sleep: float=0.0) -> LocalDataset:        
         if not path:
             path = self.doi
             if not path:
@@ -107,6 +109,7 @@ class RemoteDataset(Dataset):
 
         includes = dataset.includes
         for name, file in self.files.items():
+            sleep(float(randint(1,6))*random_sleep/3)
             local_file = self._download_file(file, path, notify=notify)
             if extract and local_file.is_archive and local_file.is_simple:
                 files = local_file.extract(path, notify=notify)
